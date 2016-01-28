@@ -1,0 +1,33 @@
+redis:
+  hostname: redis
+  domainname: localdomain
+  image: redis
+#  volumes:
+#    - ./graph:/usr/lib/agora/graph_store
+#    - ./dump:/data
+
+core:
+  image: smartdeveloperhub/agora
+  hostname: agora
+  domainname: localdomain
+  links:
+    - redis:redis
+  environment:
+    - FOUNTAIN_DB_HOST=redis
+    - LOG_LEVEL=DEBUG
+  volumes_from:
+    - redis
+
+nginx:
+  build: nginx
+  hostname: nginx
+  domainname: localdomain
+  links:
+    - core:agora
+  ports:
+    - "9002:80"
+  volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+
+
