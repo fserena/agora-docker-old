@@ -25,6 +25,8 @@ services:
     environment:
       - FOUNTAIN_DB_HOST=redis
       - LOG_LEVEL=INFO
+    depends_on:
+      - redis
     volumes:
       - core-data:/usr/lib/agora/graph_store
     networks:
@@ -32,8 +34,11 @@ services:
 
   scholar:
     image: smartdeveloperhub/agora-scholar:develop
-    volumes:
-      - scholar-data:/usr/lib/agora
+    depends_on:
+      - core
+      - redis
+      - mongo
+      - rabbit
     environment:
       - API_PORT=5010
       - AMQP_HOST=rabbit
@@ -53,6 +58,8 @@ services:
       - RESPONSE_RK_PREFIX=scholar.response
       - MONGO_HOST=mongo
       - MONGO_DB=scholar
+      - EVENTS_EXCHANGE=stoa
+      - EVENTS_TOPIC=stoa.events
     networks:
       - agora-network
 
@@ -68,6 +75,8 @@ services:
       - EXCHANGE_NAME=stoa
       - TOPIC_PATTERN=scholar.request
       - RESPONSE_PREFIX=scholar.response
+    depends_on:
+      - scholar
     networks:
       - agora-network
 
@@ -75,6 +84,10 @@ services:
     build: ./nginx
     ports:
       - "9002:80"
+    depends_on:
+      - core
+      - scholar
+      - fragments
     networks:
       - agora-network
 
@@ -86,6 +99,4 @@ volumes:
   core-data:
     driver: local
   redis-data:
-    driver: local
-  scholar-data:
     driver: local
