@@ -21,7 +21,7 @@ services:
       - agora-network
 
   core:
-    image: smartdeveloperhub/agora
+    image: smartdeveloperhub/agora:develop
     environment:
       - FOUNTAIN_DB_HOST=redis
       - LOG_LEVEL=INFO
@@ -31,7 +31,7 @@ services:
       - agora-network
 
   scholar:
-    image: smartdeveloperhub/agora-scholar
+    image: smartdeveloperhub/agora-scholar:develop
     volumes:
       - scholar-data:/usr/lib/agora
     environment:
@@ -58,7 +58,7 @@ services:
 
 
   fragments:
-    image: smartdeveloperhub/agora-fragments
+    image: smartdeveloperhub/agora-fragments:develop
     environment:
       - API_PORT=5006
       - BROKER_HOST=rabbit
